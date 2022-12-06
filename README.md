@@ -11,6 +11,52 @@ Ready to use, open-source framework for creating games in Flax.
 * Extendable (eg. via `GameSystem` or `GameSceneSystem`)
 * Debug UI ([ImGui](https://github.com/FlaxEngine/ImGui))
 
+Minimum supported Flax version: `1.5`.
+
+## Installation
+
+1. Clone repo into `<game-project>\Plugins\ArizonaFramework`
+
+2. Add reference to Arizona Framework project in your game by modyfying your game `<game-project>.flaxproj` as follows:
+
+```
+...
+"References": [
+    {
+        "Name": "$(EnginePath)/Flax.flaxproj"
+    },
+    {
+        "Name": "$(ProjectPath)/Plugins/ArizonaFramework/ArizonaFramework.flaxproj"
+    }
+]
+```
+
+3. Add reference to *ArizonaFramework* module in your game build script (eg. `Game.Build.cs`) as follows:
+
+```cs
+/// <inheritdoc />
+public override void Setup(BuildOptions options)
+{
+    base.Setup(options);
+
+    BuildNativeCode = false;
+    options.ScriptingAPI.IgnoreMissingDocumentationWarnings = true;
+
+    // Add reference to ArizonaFramework
+    options.PrivateDependencies.Add("ArizonaFramework");
+}
+```
+
+4. Create new `Game Instance Settings` (linked to Game Settings by Editor).
+
+5. Customize it
+
+Now you can use *Arizona Framework* in your project. Use created `Game Instance Settings` asset to define your game mode, player pawn and other types to control the game data and logic.
+
+## License
+
+Both this plugin and ImGui are released under **MIT License**.
+
 ## Core Components
 
 ### Game Instance
