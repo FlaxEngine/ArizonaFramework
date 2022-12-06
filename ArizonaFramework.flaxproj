@@ -1,0 +1,17 @@
+{
+	"Name": "ArizonaFramework",
+	"Version": "0.1",
+	"MinEngineVersion": "1.5",
+	"Company": "Wojciech Figat",
+	"Copyright": "Copyright (c) Wojciech Figat. All rights reserved.",
+	"GameTarget": "ArizonaFrameworkTarget",
+	"EditorTarget": "ArizonaFrameworkEditorTarget",
+	"References": [
+		{
+			"Name": "$(EnginePath)/Flax.flaxproj"
+		},
+		{
+			"Name": "$(ProjectPath)/Plugins/ImGui/ImGui.flaxproj"
+		}
+	]
+}
