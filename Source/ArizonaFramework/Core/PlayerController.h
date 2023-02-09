@@ -54,6 +54,16 @@ public:
     {
     }
 
+    /// <summary>
+    /// Event called after receiving pawn movement from the client. Can be used to reject too big deltas that prevent players from cheating. Called on server-only.
+    /// </summary>
+    /// <param name="translation">The translation vector.</param>
+    /// <param name="rotation">The rotation quaternion.</param>
+    API_FUNCTION() virtual bool OnValidateMove(const Vector3& translation, const Quaternion& rotation)
+    {
+        return true;
+    }
+
 public:
     /// <summary>
     /// Creates the Player UI actor for a player which will be used by the local player.

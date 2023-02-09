@@ -246,8 +246,10 @@ void PlayerController::MovePawnServer(const Vector3& translation, const Quaterni
 {
     NETWORK_RPC_IMPL(PlayerController, MovePawnServer, translation, rotation);
 
-    // TODO: perform server-side check if the move is valid (eg. too large translation or rotation)
-    MovePawn(translation, rotation);
+    if (OnValidateMove(translation, rotation))
+    {
+        MovePawn(translation, rotation);
+    }
 }
 
 void PlayerController::OnUpdate()
@@ -689,8 +691,11 @@ void GameInstance::OnSceneLoaded(Scene* scene, const Guid& sceneId)
         for (Actor* a : _sceneTransitionActors)
             a->SetParent(scene);
         _sceneTransitionActors.Clear();
-        for (PlayerState* player : _sceneTransitionPlayers)
-            _gameMode->OnPlayerSpawned(player);
+        if (_gameMode)
+        {
+            for (PlayerState* player : _sceneTransitionPlayers)
+                _gameMode->OnPlayerSpawned(player);
+        }
         _sceneTransitionPlayers.Clear();
     }
 }
