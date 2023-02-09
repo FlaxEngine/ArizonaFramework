@@ -558,6 +558,12 @@ void GameInstance::EndGame()
     ASSERT(IsInMainThread());
     if (!_gameStarted)
         return;
+    if (NetworkManager::State == NetworkConnectionState::Connected)
+    {
+        // Disconnect when ending multi game via local end
+        NetworkManager::Stop();
+        return;
+    }
     GameEnding();
 
     if (_gameMode)
