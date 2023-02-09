@@ -51,4 +51,10 @@ public:
     /// </summary>
     /// <param name="playerState">The player state.</param>
     API_FUNCTION() virtual void OnPlayerLeft(PlayerState* playerState);
+
+    /// <summary>
+    /// Called when player gets spawned on a level. Called again during respawn (eg. when scene gets changed).
+    /// </summary>
+    /// <param name="playerState">The player state.</param>
+    API_FUNCTION() virtual void OnPlayerSpawned(PlayerState* playerState);
 };

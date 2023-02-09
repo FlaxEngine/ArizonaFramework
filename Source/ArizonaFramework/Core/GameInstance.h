@@ -30,6 +30,7 @@ private:
     String _windowTitle;
 #endif
     Array<Actor*> _sceneTransitionActors;
+    Array<PlayerState*> _sceneTransitionPlayers;
 
 public:
     /// <summary>

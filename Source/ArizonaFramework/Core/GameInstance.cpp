@@ -113,6 +113,10 @@ void GameMode::OnPlayerLeft(PlayerState* playerState)
 {
 }
 
+void GameMode::OnPlayerSpawned(PlayerState* playerState)
+{
+}
+
 GameState::GameState(const SpawnParams& params)
     : ScriptingObject(params)
 {
@@ -579,6 +583,7 @@ void GameInstance::EndGame()
         _gameState = nullptr;
     }
     _sceneTransitionActors.Clear();
+    _sceneTransitionPlayers.Clear();
     if (_isHosting)
     {
         _gameMode->DeleteObject();
@@ -678,6 +683,9 @@ void GameInstance::OnSceneLoaded(Scene* scene, const Guid& sceneId)
         for (Actor* a : _sceneTransitionActors)
             a->SetParent(scene);
         _sceneTransitionActors.Clear();
+        for (PlayerState* player : _sceneTransitionPlayers)
+            _gameMode->OnPlayerSpawned(player);
+        _sceneTransitionPlayers.Clear();
     }
 }
 
@@ -703,6 +711,7 @@ void GameInstance::OnSceneUnloading(Scene* scene, const Guid& sceneId)
                 TRANSITION_SCRIPT(PlayerController);
                 TRANSITION_SCRIPT(PlayerPawn);
 #undef TRANSITION_SCRIPT
+                _sceneTransitionPlayers.Add(playerState);
             }
         }
     }
@@ -806,6 +815,7 @@ PlayerState* GameInstance::CreatePlayer(NetworkClient* client)
     Level::SpawnActor(controllerActor);
 
     _gameMode->OnPlayerJoined(playerState);
+    _gameMode->OnPlayerSpawned(playerState);
 
     return playerState;
 }
