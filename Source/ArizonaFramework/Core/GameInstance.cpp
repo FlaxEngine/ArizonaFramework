@@ -574,7 +574,6 @@ void GameInstance::StartGame()
 
 void GameInstance::EndGame()
 {
-    ASSERT(IsInMainThread());
     if (!_gameStarted)
         return;
     if (NetworkManager::State == NetworkConnectionState::Connected)
