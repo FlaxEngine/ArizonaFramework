@@ -443,14 +443,29 @@ void GameInstance::OnUpdate()
             if (Level::Scenes.IsEmpty())
                 break;
 
+            Actor* pawnActor = playerState->PlayerPawn->GetParent();
+            Actor* controllerActor = playerState->PlayerController ? playerState->PlayerController->GetParent() : nullptr;
+
 #if !BUILD_RELEASE
             // Set proper name for the player actors to improve dev usage
-            ASSERT(playerState->PlayerPawn->GetParent());
-            if (playerState->PlayerPawn->GetParent())
-                playerState->PlayerPawn->GetParent()->SetName(String::Format(TEXT("Player Pawn PlayerId={}"), playerId));
-            if (playerState->PlayerController && playerState->PlayerController->GetParent())
-                playerState->PlayerController->GetParent()->SetName(String::Format(TEXT("Player Controller PlayerId={}"), playerId));
+            ASSERT(pawnActor);
+            if (pawnActor)
+                pawnActor->SetName(String::Format(TEXT("Player Pawn PlayerId={}"), playerId));
+            if (controllerActor)
+                controllerActor->SetName(String::Format(TEXT("Player Controller PlayerId={}"), playerId));
 #endif
+
+            // Ensure that player exists on a level (could be unlinked due to level transition when starting game)
+            if (!pawnActor->GetParent())
+            {
+                Level::SpawnActor(pawnActor);
+                _sceneTransitionActors.Remove(pawnActor);
+            }
+            if (controllerActor && !controllerActor->GetParent())
+            {
+                Level::SpawnActor(controllerActor);
+                _sceneTransitionActors.Remove(controllerActor);
+            }
 
             // Spawn player
             playerState->PlayerPawn->_spawned = true;
