@@ -440,6 +440,8 @@ void GameInstance::OnUpdate()
             }
             if (needController && playerState->PlayerController == nullptr)
                 continue;
+            if (Level::Scenes.IsEmpty())
+                break;
 
 #if !BUILD_RELEASE
             // Set proper name for the player actors to improve dev usage
@@ -775,8 +777,12 @@ PlayerState* GameInstance::CreatePlayer(NetworkClient* client)
     playerState->PlayerPawn = pawnScript;
 
     // Spawn player pawn on all connected clients and locally
+    const bool canSpawn = Level::Scenes.HasItems();
     NetworkReplicator::SpawnObject(pawnActor);
-    Level::SpawnActor(pawnActor);
+    if (canSpawn)
+        Level::SpawnActor(pawnActor);
+    else
+        _sceneTransitionActors.Add(pawnActor);
 
     // Create player controller
     Actor* controllerActor = _gameMode->CreatePlayerController(playerState);
@@ -823,10 +829,16 @@ PlayerState* GameInstance::CreatePlayer(NetworkClient* client)
         // Offline mode requires some manual setup (no events from replication system)
         _playersToSpawn.AddUnique(playerState->PlayerId);
     }
-    Level::SpawnActor(controllerActor);
+    if (canSpawn)
+        Level::SpawnActor(controllerActor);
+    else
+        _sceneTransitionActors.Add(controllerActor);
 
     _gameMode->OnPlayerJoined(playerState);
-    _gameMode->OnPlayerSpawned(playerState);
+    if (canSpawn)
+        _gameMode->OnPlayerSpawned(playerState);
+    else
+        _sceneTransitionPlayers.Add(playerState);
 
     return playerState;
 }
