@@ -1,5 +1,7 @@
 # Arizona Framework
 
+![Arizona Framework Sample](Content/screenshot.png)
+
 Ready to use, open-source framework for creating games in Flax.
 
 ## Features
@@ -12,6 +14,10 @@ Ready to use, open-source framework for creating games in Flax.
 * Debug UI ([ImGui](https://github.com/FlaxEngine/ImGui))
 
 Minimum supported Flax version: `1.5`.
+
+## Sample project
+
+See the open-source [Arizona Framework Sample](https://github.com/FlaxEngine/ArizonaFrameworkSample) project that showcases Arizona Framework usage in a simple first-person shooter game with multiplayer.
 
 ## Installation
 
@@ -106,3 +112,62 @@ Player User Interface with HUD. Exists only on local clients and is using Player
     * Player UI (script attached to spawned actor)
   * Game State
     * Player State
+
+## Game Systems
+
+``GameSystem`` and ``GameSceneSystem`` are base types for custom gameplay systems that are tied with the game/scene lifetime. This allows quickly extending the gameplay with custom features such as Level Streaming, Weapons Manager, AI Manager, or other game systems/managers. ``GameSceneSystem`` is created once per loaded scene thus allowing to cache of scene-related data (eg. active entities).
+
+Game Systems are created by Game Instance during game plugin initialization when the game starts. Each system can optionally skip with `CanBeUsed` method.
+
+Example usage of `GameSystem` that loads game level when game connects to network server or main menu level on disconnect, it has cached list of Spawn Points for Game Mode to spawn players:
+
+```cs
+/// <summary>
+/// Game levels manager that handles scene transitions (eg. joining game map after main menu connection).
+/// </summary>
+public class LevelsManager : GameSystem
+{
+    /// <summary>
+    /// Gets the Levels Manager instance.
+    /// </summary>
+    public static LevelsManager Instance => GameInstance.Instance?.GetGameSystem<LevelsManager>();
+
+    /// <summary>
+    /// Active spawn points.
+    /// </summary>
+    public readonly List<SpawnPoint> SpawnPoints = new List<SpawnPoint>();
+
+    /// <inheritdoc />
+    public override void Initialize()
+    {
+        base.Initialize();
+
+        NetworkManager.StateChanged += OnNetworkStateChanged;
+    }
+
+    /// <inheritdoc />
+    public override void Deinitialize()
+    {
+        NetworkManager.StateChanged -= OnNetworkStateChanged;
+
+        base.Deinitialize();
+    }
+
+    private void OnNetworkStateChanged()
+    {
+        // Select target scene to go to
+        var mySettings = MySettings.Instance;
+        var targetScene = mySettings.MainMenuLevel; // Go to menu by default
+        if (NetworkManager.State == NetworkConnectionState.Connected)
+        {
+            targetScene = mySettings.GameLevel; // Go to the game level
+        }
+
+        // Load that scene (skip if already loaded)
+        if (Level.FindActor(targetScene.ID) != null)
+            return;
+        Level.UnloadAllScenesAsync();
+        Level.LoadSceneAsync(targetScene);
+    }
+}
+```
