@@ -66,7 +66,7 @@ public:
     template<typename T>
     FORCE_INLINE T* GetGameSystem()
     {
-        return (T*)GetGameSystem(T::GetStaticType());
+        return (T*)GetGameSystem(T::TypeInitializer);
     }
 
 public:
