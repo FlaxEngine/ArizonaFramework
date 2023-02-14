@@ -21,7 +21,9 @@ See the open-source [Arizona Framework Sample](https://github.com/FlaxEngine/Ari
 
 ## Installation
 
-1. Clone repo into `<game-project>\Plugins\ArizonaFramework`
+0. Ensure to have proper system setup for C++ Scripting - see [Flax Docs](https://docs.flaxengine.com/manual/scripting/cpp/index.html)
+
+1. Clone repo into `<game-project>\Plugins\ArizonaFramework` (with submodules: `git submodule update --init --recursive`)
 
 2. Add reference to Arizona Framework project in your game by modyfying your game `<game-project>.flaxproj` as follows:
 
