@@ -57,6 +57,8 @@ public override void Setup(BuildOptions options)
 
 4. Create new `Game Instance Settings` (linked to Game Settings by Editor).
 
+Ensure to have [Network Settings](https://docs.flaxengine.com/manual/networking/high-level.html#network-settings) setup.
+
 5. Customize it
 
 Now you can use *Arizona Framework* in your project. Use created `Game Instance Settings` asset to define your game mode, player pawn and other types to control the game data and logic.
