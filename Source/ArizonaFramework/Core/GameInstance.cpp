@@ -226,6 +226,10 @@ Actor* PlayerController::CreatePlayerUI(PlayerState* playerState)
 
 void PlayerController::MovePawn(const Vector3& translation, const Quaternion& rotation)
 {
+    // Ignore zero deltas
+    if (translation.LengthSquared() <= 0.0f && rotation.IsIdentity())
+        return;
+
     const PlayerPawn* pawn = GetPlayerPawn();
     Actor* pawnActor = pawn ? pawn->GetActor() : nullptr;
     if (!pawnActor)
