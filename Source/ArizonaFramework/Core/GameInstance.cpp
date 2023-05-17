@@ -572,7 +572,7 @@ void GameInstance::StartGame()
     GameStarted();
 
     // Spawn local player
-    if (networkMode == NetworkManagerMode::Host)
+    if (networkMode == NetworkManagerMode::Host && NetworkManager::LocalClient && NetworkManager::LocalClient->State == NetworkConnectionState::Connected)
         OnNetworkClientConnected(NetworkManager::LocalClient);
 }
 
