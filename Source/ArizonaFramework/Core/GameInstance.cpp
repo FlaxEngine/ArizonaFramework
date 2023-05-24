@@ -37,19 +37,6 @@
 namespace
 {
     template<typename T>
-    T* Setup(const StringAnsi& typeName)
-    {
-        const ScriptingTypeHandle type = Scripting::FindScriptingType(typeName);
-        auto obj = ScriptingObject::NewObject<T>(type);
-        if (!obj)
-        {
-            LOG(Error, "Unknown or invalid type {0}", String(typeName));
-            obj = ScriptingObject::NewObject<T>();
-        }
-        return obj;
-    }
-
-    template<typename T>
     void DeleteScript(T*& obj)
     {
         if (obj)
@@ -565,9 +552,9 @@ void GameInstance::StartGame()
     // Create game mode and state
     if (_isHosting)
     {
-        _gameMode = Setup<GameMode>(settings.GameModeType);
+        _gameMode = settings.GameModeType.NewObject();
     }
-    _gameState = Setup<GameState>(settings.GameStateType);
+    _gameState = settings.GameStateType.NewObject();
     NetworkReplicator::AddObject(_gameState, this);
 
     if (_isHosting)
@@ -773,7 +760,7 @@ PlayerState* GameInstance::CreatePlayer(NetworkClient* client)
 {
     // Add player
     const auto& settings = *GameInstanceSettings::Get();
-    auto playerState = Setup<PlayerState>(settings.PlayerStateType);
+    auto playerState = settings.PlayerStateType.NewObject();
     if (client)
         playerState->NetworkClientId = client->ClientId;
     else

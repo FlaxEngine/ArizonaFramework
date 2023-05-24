@@ -13,7 +13,7 @@ class NetworkReplicationHierarchy;
 /// <summary>
 /// The settings for Game Instance.
 /// </summary>
-API_CLASS() class ARIZONAFRAMEWORK_API GameInstanceSettings : public SettingsBase
+API_CLASS(NoConstructor) class ARIZONAFRAMEWORK_API GameInstanceSettings : public SettingsBase
 {
     API_AUTO_SERIALIZATION();
     DECLARE_SCRIPTING_TYPE_MINIMAL(GameInstanceSettings);
@@ -23,20 +23,20 @@ public:
     /// <summary>
     /// The type of the Game Mode that will be spawned on game host/server. Used to control the game logic and match flow.
     /// </summary>
-    API_FIELD(Attributes="EditorOrder(100), EditorDisplay(\"Types\"), TypeReference(typeof(GameMode)), CustomEditorAlias(\"FlaxEditor.CustomEditors.Editors.TypeNameEditor\")")
-    StringAnsi GameModeType = "ArizonaFramework.GameMode";
+    API_FIELD(Attributes="EditorOrder(100), EditorDisplay(\"Types\"), TypeReference(typeof(GameMode))")
+    SoftTypeReference<GameMode> GameModeType = "ArizonaFramework.GameMode";
 
     /// <summary>
     /// The type of the Game State that will be spawned on host and clients (server-authoritative). Holds the global game state (eg. teams score).
     /// </summary>
-    API_FIELD(Attributes="EditorOrder(110), EditorDisplay(\"Types\"), TypeReference(typeof(GameState)), CustomEditorAlias(\"FlaxEditor.CustomEditors.Editors.TypeNameEditor\")")
-    StringAnsi GameStateType = "ArizonaFramework.GameState";
+    API_FIELD(Attributes="EditorOrder(110), EditorDisplay(\"Types\"), TypeReference(typeof(GameState))")
+    SoftTypeReference<GameState> GameStateType = "ArizonaFramework.GameState";
 
     /// <summary>
     /// The type of the Player State that will be spawned on host and clients (server-authoritative). Holds the per-player state (eg. health and inventory).
     /// </summary>
-    API_FIELD(Attributes="EditorOrder(120), EditorDisplay(\"Types\"), TypeReference(typeof(PlayerState)), CustomEditorAlias(\"FlaxEditor.CustomEditors.Editors.TypeNameEditor\")")
-    StringAnsi PlayerStateType = "ArizonaFramework.PlayerState";
+    API_FIELD(Attributes="EditorOrder(120), EditorDisplay(\"Types\"), TypeReference(typeof(PlayerState))")
+    SoftTypeReference<PlayerState> PlayerStateType = "ArizonaFramework.PlayerState";
 
     /// <summary>
     /// The Player Pawn prefab asset to spawn by Game Mode for each joining player.
