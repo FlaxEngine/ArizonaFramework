@@ -23,6 +23,7 @@
 #include "Engine/Networking/NetworkManager.h"
 #include "Engine/Networking/NetworkReplicator.h"
 #include "Engine/Networking/NetworkRpc.h"
+#include "Engine/Networking/NetworkReplicationHierarchy.h"
 #include "Engine/Profiler/ProfilerCPU.h"
 #if !BUILD_RELEASE
 #include "Engine/Platform/Window.h"
@@ -555,6 +556,12 @@ void GameInstance::StartGame()
     // Register Game Instance as a root for networking objects
     NetworkReplicator::AddObject(this);
 
+    // Setup replication hierarchy
+    if (NetworkReplicator::GetHierarchy() == nullptr && settings.ReplicationHierarchy)
+    {
+        NetworkReplicator::SetHierarchy(settings.ReplicationHierarchy.NewObject());
+    }
+
     // Create game mode and state
     if (_isHosting)
     {
@@ -617,6 +624,7 @@ void GameInstance::EndGame()
         _gameMode->DeleteObject();
         _gameMode = nullptr;
     }
+    NetworkReplicator::SetHierarchy(nullptr);
 
     _gameStarted = false;
     GameEnded();

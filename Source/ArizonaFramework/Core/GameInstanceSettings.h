@@ -4,7 +4,11 @@
 
 #include "Engine/Core/Config/Settings.h"
 #include "Engine/Content/SoftAssetReference.h"
+#include "Engine/Scripting/SoftTypeReference.h"
 #include "Engine/Level/Prefabs/Prefab.h"
+#include "../Networking/ReplicationSettings.h"
+
+class NetworkReplicationHierarchy;
 
 /// <summary>
 /// The settings for Game Instance.
@@ -51,4 +55,23 @@ public:
     /// </summary>
     API_FIELD(Attributes="EditorOrder(160), EditorDisplay(\"Types\")")
     SoftAssetReference<Prefab> PlayerUIPrefab;
+
+public:
+    /// <summary>
+    /// Type of the network replication hierarchy system to use.
+    /// </summary>
+    API_FIELD(Attributes="EditorOrder(1000), EditorDisplay(\"Replication\"), TypeReference(typeof(FlaxEngine.Networking.NetworkReplicationHierarchy))")
+    SoftTypeReference<NetworkReplicationHierarchy> ReplicationHierarchy = "ArizonaFramework.ReplicationHierarchy";
+
+    /// <summary>
+    /// Default replication settings. Used when not overriden by specific object type.
+    /// </summary>
+    API_FIELD(Attributes="EditorOrder(1010), EditorDisplay(\"Replication\")")
+    ReplicationSettings DefaultReplicationSettings;
+
+    /// <summary>
+    /// Per-type replication settings. Runtime lookup includes base classes (but not interfaces).
+    /// </summary>
+    API_FIELD(Attributes="EditorOrder(1050), EditorDisplay(\"Replication\")")
+    Dictionary<SoftTypeReference<>, ReplicationSettings> ReplicationSettingsPerType;
 };

@@ -3,7 +3,6 @@
 #pragma once
 
 #include "Engine/Scripting/Script.h"
-#include "Engine/Networking/INetworkObject.h"
 #include "Types.h"
 
 /// <summary>

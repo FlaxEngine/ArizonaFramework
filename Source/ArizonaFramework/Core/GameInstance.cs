@@ -14,4 +14,16 @@ namespace ArizonaFramework
             return GetGameSystem(typeof(T)) as T;
         }
     }
+
+    partial class GameInstanceSettings
+    {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="GameInstanceSettings"/> class.
+        /// </summary>
+        public GameInstanceSettings()
+        {
+            // Init with defaults (C# lacks of proper empty ctor for structures)
+            DefaultReplicationSettings = ReplicationSettings.Default;
+        }
+    }
 }
