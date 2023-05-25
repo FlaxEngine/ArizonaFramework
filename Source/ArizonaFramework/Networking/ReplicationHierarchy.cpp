@@ -68,6 +68,13 @@ void ReplicationHierarchy::AddObject(NetworkReplicationHierarchyObject obj)
     NetworkReplicationHierarchy::AddObject(obj);
 }
 
+bool ReplicationHierarchy::RemoveObject(ScriptingObject* obj)
+{
+    if (_grid && _grid->RemoveObject(obj))
+        return true;
+    return NetworkReplicationHierarchy::RemoveObject(obj);
+}
+
 void ReplicationHierarchy::Update(NetworkReplicationHierarchyUpdateResult* result)
 {
     if (const auto* instance = GameInstance::GetInstance())
