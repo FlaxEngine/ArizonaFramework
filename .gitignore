@@ -1,10 +1,11 @@
 # Ignore Flax project files
-Binaries/
-Cache/
-Logs/
-Output/
-Screenshots/
+/Binaries/
+/Cache/
+/Logs/
+/Output/
+/Screenshots/
 *.HotReload.*
+Source/*.Gen.*
 
 # Local files
 imgui.ini
@@ -42,11 +43,9 @@ Thumbs.db
 *.ilk
 *.log
 [Bb]in
-[Dd]ebug*/
 *.lib
 *.sbr
-obj/
-[Rr]elease*/
+/Source/obj/
 _ReSharper*/
 [Tt]est[Rr]esult*
 .vs/
