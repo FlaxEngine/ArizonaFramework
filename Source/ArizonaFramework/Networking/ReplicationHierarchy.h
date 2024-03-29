@@ -29,5 +29,6 @@ public:
     // [NetworkReplicationHierarchy]
     void AddObject(NetworkReplicationHierarchyObject obj) override;
     bool RemoveObject(ScriptingObject* obj) override;
+    bool DirtyObject(ScriptingObject* obj) override;
     void Update(NetworkReplicationHierarchyUpdateResult* result) override;
 };

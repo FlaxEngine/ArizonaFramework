@@ -75,6 +75,13 @@ bool ReplicationHierarchy::RemoveObject(ScriptingObject* obj)
     return NetworkReplicationHierarchy::RemoveObject(obj);
 }
 
+bool ReplicationHierarchy::DirtyObject(ScriptingObject* obj)
+{
+    if (_grid && _grid->DirtyObject(obj))
+        return true;
+    return NetworkReplicationHierarchy::DirtyObject(obj);
+}
+
 void ReplicationHierarchy::Update(NetworkReplicationHierarchyUpdateResult* result)
 {
     if (const auto* instance = GameInstance::GetInstance())
