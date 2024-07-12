@@ -1,10 +1,9 @@
 #pragma once
 
-#include "ReplicationSettings.h"
 #include "Engine/Core/ISerializable.h"
 
 /// <summary>
-/// Replication settings container for object.
+/// Network object replication settings container.
 /// </summary>
 API_STRUCT() struct ARIZONAFRAMEWORK_API ReplicationSettings : ISerializable
 {
