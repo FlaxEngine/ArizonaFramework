@@ -3,9 +3,11 @@
 #if FLAX_EDITOR
 
 using System;
+using System.Collections.Generic;
 using FlaxEngine;
 using FlaxEditor;
 using FlaxEditor.Content;
+using ArizonaFramework.Debug;
 
 namespace ArizonaFramework.Editor
 {
@@ -14,7 +16,7 @@ namespace ArizonaFramework.Editor
     /// </summary>
     public sealed class GameInstanceEditor : EditorPlugin
     {
-        private AssetProxy _assetProxy;
+        private AssetProxy[] _assetProxies;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="GameInstanceEditor"/> class.
@@ -39,15 +41,21 @@ namespace ArizonaFramework.Editor
         {
             base.InitializeEditor();
 
-            _assetProxy = new CustomSettingsProxy(typeof(GameInstanceSettings), "GameInstance");
-            Editor.ContentDatabase.Proxy.Add(_assetProxy);
+            _assetProxies = new[]
+            {
+                new CustomSettingsProxy(typeof(GameInstanceSettings), "GameInstance"),
+                new CustomSettingsProxy(typeof(DebugSettings), "Debug"),
+            };
+            foreach (var e in _assetProxies)
+                Editor.ContentDatabase.Proxy.Add(e);
         }
 
         /// <inheritdoc />
         public override void DeinitializeEditor()
         {
-            Editor.ContentDatabase.Proxy.Remove(_assetProxy);
-            _assetProxy = null;
+            foreach (var e in _assetProxies)
+                Editor.ContentDatabase.Proxy.Remove(e);
+            _assetProxies = null;
 
             base.DeinitializeEditor();
         }
