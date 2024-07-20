@@ -10,7 +10,8 @@ API_CLASS(Abstract, Namespace="ArizonaFramework.Debug") class ARIZONAFRAMEWORK_A
     DECLARE_SCRIPTING_TYPE(DebugWindow);
     friend class DebugSystem;
 
-private:
+protected:
+    // True if window is active.
     bool _active = false;
 
 public:

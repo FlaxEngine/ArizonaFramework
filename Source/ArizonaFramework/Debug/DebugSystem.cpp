@@ -117,6 +117,8 @@ void DebugSystem::OnUpdate()
             if (window->_active)
             {
                 window->OnDraw();
+                if (!window->_active)
+                    window->OnDeactivated();
             }
         }
     }
