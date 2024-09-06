@@ -31,13 +31,13 @@ DebugSystem::DebugSystem(const SpawnParams& params)
 
 void DebugSystem::Initialize()
 {
-    Scripting::Update.Bind<DebugSystem, &DebugSystem::OnUpdate>(this);
+    Engine::Update.Bind<DebugSystem, &DebugSystem::OnUpdate>(this);
     _menuActive = false;
 }
 
 void DebugSystem::Deinitialize()
 {
-    Scripting::Update.Unbind<DebugSystem, &DebugSystem::OnUpdate>(this);
+    Engine::Update.Unbind<DebugSystem, &DebugSystem::OnUpdate>(this);
     _windows.ClearDelete();
 }
 
