@@ -1,10 +1,12 @@
 #include "DebugWindows.h"
 #include "Engine/Core/Log.h"
+#include "Engine/Core/Collections/ChunkedArray.h"
 #include "Engine/Platform/Platform.h"
 #include "Engine/Platform/CreateProcessSettings.h"
 #include "Engine/Level/Level.h"
 #include "Engine/Level/Scene/Scene.h"
 #include "Engine/Utilities/StringConverter.h"
+#include "Engine/Debug/DebugCommands.h"
 #include "ImGui/imgui.h"
 
 DebugGeneralToolsWindow::DebugGeneralToolsWindow(const SpawnParams& params)
@@ -156,7 +158,8 @@ void DebugGeneralConsoleWindow::OnCommand(const char* command)
         _entries.Clear();
         return;
     }
-    // TODO: execute command
+    String commandStr(command);
+    DebugCommands::Execute(commandStr);
 }
 
 void DebugGeneralConsoleWindow::AddLog(StringAnsi&& msg)
@@ -195,13 +198,24 @@ int DebugGeneralConsoleWindow::OnTextEditCallback(ImGuiInputTextCallbackData* da
         const StringAnsiView word(wordStart, (int)(wordEnd - wordStart));
         if (StringAnsiView("clear").StartsWith(word, StringSearchCase::IgnoreCase))
             candidates.push_back("clear");
+        int32 cmdIndex = 0;
+        StringAsUTF16<> wordUTF16(word.Get(), word.Length());
+        StringView wordUTF16View(wordUTF16.Get(), wordUTF16.Length());
+        ChunkedArray<StringAnsi, 256> candidatesCache;
+        while (DebugCommands::Iterate(wordUTF16View, cmdIndex))
+        {
+            StringAnsi& candidate = candidatesCache.AddOne();
+            candidate = StringAnsi(DebugCommands::GetCommandName(cmdIndex));
+            candidates.push_back(candidate.Get());
+            cmdIndex++;
+        }
         if (word.IsEmpty())
         {
             // Ignore
         }
         else if (candidates.Size == 0)
         {
-            AddLog(StringAnsi::Format("No match for \"{}\"", word));
+            //AddLog(StringAnsi::Format("No match for \"{}\"", word));
         }
         else if (candidates.Size == 1)
         {
