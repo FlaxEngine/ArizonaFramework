@@ -48,6 +48,9 @@ void DebugGeneralConsoleWindow::OnDraw()
         return;
     ScopeLock lock(_locker);
 
+    // Kick off early-init for commands
+    DebugCommands::InitAsync();
+
     // Context menu
     if (ImGui::BeginPopupContextItem())
     {
@@ -135,9 +138,6 @@ void DebugGeneralConsoleWindow::OnCommand(const char* command)
 {
     if (!command || !*command)
         return;
-
-    // Insert command into the log and scroll down
-    _entries.Add({ LogType::Info, StringAnsi::Format("> {}", command) });
     _scrollToBottom = true;
 
     // Add into history (remove if already added previously)
