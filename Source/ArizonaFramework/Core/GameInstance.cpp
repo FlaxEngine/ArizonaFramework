@@ -231,6 +231,11 @@ void PlayerController::MovePawn(const Vector3& translation, const Quaternion& ro
     }
 
     // Perform local move
+    OnMovePawn(pawnActor, translation, rotation);
+}
+
+void PlayerController::OnMovePawn(Actor* pawnActor, const Vector3& translation, const Quaternion& rotation)
+{
     pawnActor->AddMovement(translation, rotation);
 }
 

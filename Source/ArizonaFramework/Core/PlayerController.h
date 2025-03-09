@@ -78,6 +78,10 @@ public:
     /// <param name="rotation">The rotation quaternion.</param>
     API_FUNCTION() void MovePawn(const Vector3& translation, const Quaternion& rotation);
 
+protected:
+    // Performs local movement of the pawn actor.
+    virtual void OnMovePawn(Actor* pawnActor, const Vector3& translation, const Quaternion& rotation);
+
 private:
     API_FUNCTION(NetworkRpc=Server) void MovePawnServer(const Vector3& translation, const Quaternion& rotation);
 
