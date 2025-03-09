@@ -6,8 +6,7 @@
 #include "Engine/Level/Level.h"
 #include "Engine/Level/Scene/Scene.h"
 #include "Engine/Utilities/StringConverter.h"
-#include "Engine/Debug/DebugCommands.h"
-#include "ImGui/imgui.h"
+#include <ImGui/imgui.h>
 
 DebugGeneralToolsWindow::DebugGeneralToolsWindow(const SpawnParams& params)
     : DebugWindow(params)
@@ -28,6 +27,10 @@ void DebugGeneralToolsWindow::OnDraw()
     }
     ImGui::End();
 }
+
+#if FLAX_1_10_OR_NEWER
+
+#include "Engine/Debug/DebugCommands.h"
 
 DebugGeneralConsoleWindow::DebugGeneralConsoleWindow(const SpawnParams& params)
     : DebugWindow(params)
@@ -278,6 +281,8 @@ int DebugGeneralConsoleWindow::OnTextEditCallback(ImGuiInputTextCallbackData* da
     }
     return 0;
 }
+
+#endif
 
 DebugSceneTreeWindow::DebugSceneTreeWindow(const SpawnParams& params)
     : DebugWindow(params)

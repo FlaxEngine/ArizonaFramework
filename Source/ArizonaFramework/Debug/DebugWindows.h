@@ -11,6 +11,8 @@ API_CLASS(Namespace="ArizonaFramework.Debug") class ARIZONAFRAMEWORK_API DebugGe
     void OnDraw() override;
 };
 
+#if FLAX_1_10_OR_NEWER
+
 // Console output and command line access.
 API_CLASS(Namespace="ArizonaFramework.Debug") class ARIZONAFRAMEWORK_API DebugGeneralConsoleWindow : public DebugWindow
 {
@@ -37,6 +39,8 @@ private:
     static int OnTextEditCallbackStub(struct ImGuiInputTextCallbackData* data);
     int OnTextEditCallback(ImGuiInputTextCallbackData* data);
 };
+
+#endif
 
 // Scene hierarchy debugging window.
 API_CLASS(Namespace="ArizonaFramework.Debug") class ARIZONAFRAMEWORK_API DebugSceneTreeWindow : public DebugWindow
