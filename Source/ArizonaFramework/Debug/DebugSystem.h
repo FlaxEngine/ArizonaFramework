@@ -15,6 +15,9 @@ private:
     Array<class DebugWindow*> _windows;
 
 public:
+    void SetActive(bool active);
+
+public:
     // [GameSystem]
     void Initialize() override;
     void Deinitialize() override;

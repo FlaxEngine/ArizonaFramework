@@ -19,6 +19,7 @@ API_CLASS(Namespace="ArizonaFramework.Debug") class ARIZONAFRAMEWORK_API DebugGe
     DECLARE_SCRIPTING_TYPE(DebugGeneralConsoleWindow);
     ~DebugGeneralConsoleWindow();
     void OnDraw() override;
+    void OnActivated() override;
 private:
     struct Entry
     {

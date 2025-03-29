@@ -22,6 +22,12 @@ public:
     String DebugMenuOpen;
 
     /// <summary>
+    /// Input action that opens and focuses or hides console window (defined in Input Settings).
+    /// </summary>
+    API_FIELD(Attributes="EditorOrder(51), EditorDisplay(\"ImGui\"), CustomEditorAlias(\"FlaxEditor.CustomEditors.Editors.InputEventEditor\")")
+    String DebugConsoleOpen;
+
+    /// <summary>
     /// List of debug windows to display in debug menu.
     /// </summary>
     API_FIELD(Attributes="EditorOrder(100), EditorDisplay(\"ImGui\"), TypeReference(typeof(ArizonaFramework.Debug.DebugWindow))")

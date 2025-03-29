@@ -1,6 +1,7 @@
 #include "DebugSystem.h"
 #include "DebugWindow.h"
 #include "DebugSettings.h"
+#include "DebugWindows.h"
 #include "ArizonaFramework/UI/UISystem.h"
 #include "Engine/Core/Config/GameSettings.h"
 #include "Engine/Core/Collections/Sorting.h"
@@ -8,6 +9,7 @@
 #include "Engine/Input/Input.h"
 #include "Engine/Content/Content.h"
 #include "Engine/Content/JsonAsset.h"
+#include "Engine/Core/Collections/ArrayExtensions.h"
 #include "Engine/Profiler/ProfilerCPU.h"
 #include "ImGui/imgui.h"
 
@@ -27,6 +29,20 @@ DebugWindow::DebugWindow(const SpawnParams& params)
 DebugSystem::DebugSystem(const SpawnParams& params)
     : GameSystem(params)
 {
+}
+
+void DebugSystem::SetActive(bool active)
+{
+    if (_menuActive == active)
+        return;
+    _menuActive = active;
+    if (auto* ui = UISystem::GetInstance())
+    {
+        if (_menuActive)
+            ui->PushInputContext(InputContextType::DebugImGui);
+        else
+            ui->PopInputContext();
+    }
 }
 
 void DebugSystem::Initialize()
@@ -49,13 +65,21 @@ void DebugSystem::OnUpdate()
     // Toggle menu visibility via input action
     if (Input::GetAction(debugSettings.DebugMenuOpen))
     {
-        _menuActive = !_menuActive;
-        if (auto* ui = UISystem::GetInstance())
+        SetActive(!_menuActive);
+    }
+
+    // Toggle console for quick debug commands access
+    bool openConsole = false, closeConsole = false;
+    if (Input::GetAction(debugSettings.DebugConsoleOpen))
+    {
+        if (!_menuActive)
         {
-            if (_menuActive)
-                ui->PushInputContext(InputContextType::DebugImGui);
-            else
-                ui->PopInputContext();
+            SetActive(true);
+            openConsole = true;
+        }
+        else
+        {
+            closeConsole = true;
         }
     }
 
@@ -73,6 +97,47 @@ void DebugSystem::OnUpdate()
                 }
             }
             Sorting::QuickSort(_windows.Get(), _windows.Count(), &SortDebugWindows);
+        }
+
+        // Console toggle
+        if (openConsole || closeConsole)
+        {
+            const Function<bool(const DebugWindow*)> findConsole = [](const DebugWindow* window) -> bool { return window->GetTypeHandle() == DebugGeneralConsoleWindow::TypeInitializer; };
+            if (auto* console = ArrayExtensions::First(_windows, findConsole))
+            {
+                if (openConsole)
+                {
+                    if (!console->_active)
+                    {
+                        // Open console
+                        console->_active = true;
+                        console->OnActivated();
+
+                        // TODO: dock console in bottom of the game viewport
+
+                        // Skip input processing this frame as user pressed/released DebugConsoleOpen action
+                        return;
+                    }
+                }
+                else
+                {
+                    if (console->_active)
+                    {
+                        // Close console
+                        console->_active = false;
+                        console->OnDeactivated();
+                        const Function<bool(const DebugWindow*)> allInactive = [](const DebugWindow* window) -> bool { return !window->_active; };
+                        if (ArrayExtensions::All(_windows, allInactive))
+                        {
+                            // Hide menu if none other window is in use (eg. user used console button again)
+                            SetActive(false);
+
+                            // Skip further processing once hidden
+                            return;
+                        }
+                    }
+                }
+            }
         }
 
         // Draw debug menu

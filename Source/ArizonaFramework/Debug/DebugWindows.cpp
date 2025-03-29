@@ -122,6 +122,8 @@ void DebugGeneralConsoleWindow::OnDraw()
         ImGuiInputTextFlags_EscapeClearsAll |
         ImGuiInputTextFlags_CallbackCompletion |
         ImGuiInputTextFlags_CallbackHistory;
+    if (ImGui::IsWindowFocused(ImGuiFocusedFlags_RootAndChildWindows) && !ImGui::IsAnyItemActive() && !ImGui::IsMouseClicked(0))
+        ImGui::SetKeyboardFocusHere(0); // Auto-focus input field
     if (ImGui::InputText("Command", _inputBuffer, ARRAY_COUNT(_inputBuffer), commandFlags, &OnTextEditCallbackStub, (void*)this))
     {
         OnCommand(_inputBuffer);
@@ -135,6 +137,12 @@ void DebugGeneralConsoleWindow::OnDraw()
         ImGui::SetKeyboardFocusHere(-1); // Auto focus previous widget
 
     ImGui::End();
+}
+
+void DebugGeneralConsoleWindow::OnActivated()
+{
+    // Clear input buffer
+    strcpy(_inputBuffer, "");
 }
 
 void DebugGeneralConsoleWindow::OnCommand(const char* command)
