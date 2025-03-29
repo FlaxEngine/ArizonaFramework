@@ -15,6 +15,7 @@
 #include "Engine/Core/Log.h"
 #include "Engine/Core/Config/GameSettings.h"
 #include "Engine/Engine/Engine.h"
+#include "Engine/Engine/Time.h"
 #include "Engine/Level/Level.h"
 #include "Engine/Level/Scene/Scene.h"
 #include "Engine/Level/Actors/EmptyActor.h"
@@ -416,7 +417,7 @@ void GameInstance::Deinitialize()
 
 void GameInstance::OnUpdate()
 {
-    if (!_gameStarted)
+    if (!_gameStarted || Time::GetGamePaused())
         return;
     PROFILE_CPU();
 
