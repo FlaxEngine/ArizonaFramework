@@ -10,6 +10,7 @@
 #include "PlayerController.h"
 #include "PlayerState.h"
 #include "PlayerUI.h"
+#include "ArizonaFramework/Utilities/Utilities.h"
 #include "Engine/Content/Content.h"
 #include "Engine/Content/JsonAsset.h"
 #include "Engine/Core/Log.h"
@@ -482,7 +483,7 @@ void GameInstance::OnUpdate()
             if (playerState->NetworkClientId == NetworkManager::LocalClientId)
             {
                 Actor* uiActor = playerState->PlayerController->CreatePlayerUI(playerState);
-                PlayerUI* uiScript = uiActor ? uiActor->GetScript<PlayerUI>() : nullptr;
+                PlayerUI* uiScript = Utilities::GetActiveScript<PlayerUI>(uiActor);
                 if (uiActor && !uiScript)
                 {
                     LOG(Error, "Invalid player UI actor spawned without PlayerUI script attached (to the root actor).");
@@ -778,7 +779,7 @@ PlayerState* GameInstance::CreatePlayer(NetworkClient* client)
 
     // Create player pawn
     Actor* pawnActor = _gameMode->CreatePlayerPawn(playerState);
-    PlayerPawn* pawnScript = pawnActor ? pawnActor->GetScript<PlayerPawn>() : nullptr;
+    PlayerPawn* pawnScript = Utilities::GetActiveScript<PlayerPawn>(pawnActor);
     if (pawnActor && !pawnScript)
     {
         LOG(Error, "Invalid player pawn actor spawned without PlayerPawn script attached (to the root actor).");
@@ -805,7 +806,7 @@ PlayerState* GameInstance::CreatePlayer(NetworkClient* client)
 
     // Create player controller
     Actor* controllerActor = _gameMode->CreatePlayerController(playerState);
-    PlayerController* controllerScript = controllerActor ? controllerActor->GetScript<PlayerController>() : nullptr;
+    PlayerController* controllerScript = Utilities::GetActiveScript<PlayerController>(controllerActor);
     if (controllerActor && !controllerScript)
     {
         LOG(Error, "Invalid player controller actor spawned without PlayerController script attached (to the root actor).");
