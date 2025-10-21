@@ -219,6 +219,7 @@ void PlayerController::MovePawn(const Vector3& translation, const Quaternion& ro
     // Ignore zero deltas
     if (translation.LengthSquared() <= 0.0f && rotation.IsIdentity())
         return;
+    PROFILE_CPU();
 
     const PlayerPawn* pawn = GetPlayerPawn();
     Actor* pawnActor = pawn ? pawn->GetActor() : nullptr;
