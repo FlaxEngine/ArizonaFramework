@@ -512,10 +512,13 @@ void GameInstance::OnUpdate()
     }
 
     // Update inputs (before scripting update)
-    const PlayerState* localPlayerState = GetLocalPlayerState();
-    if (localPlayerState && localPlayerState->PlayerController && localPlayerState->PlayerController->_spawned)
+    auto localPlayerStates = GetLocalPlayerStates();
+    for (PlayerState* localPlayerState : localPlayerStates)
     {
-        localPlayerState->PlayerController->OnUpdateInput();
+        if (localPlayerState->PlayerController && localPlayerState->PlayerController->_spawned)
+        {
+            localPlayerState->PlayerController->OnUpdateInput();
+        }
     }
 }
 
