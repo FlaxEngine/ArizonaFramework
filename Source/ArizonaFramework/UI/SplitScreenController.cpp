@@ -65,8 +65,13 @@ SplitScreenController::~SplitScreenController()
 {
     for (auto& e : _splitScreens)
     {
+        e.RenderTask->Camera = nullptr;
         if (e.RenderTask != MainRenderTask::Instance)
+        {
+            e.RenderTask->SwapChain = nullptr;
+            e.RenderTask->Output = nullptr;
             Delete(e.RenderTask);
+        }
     }
 }
 
