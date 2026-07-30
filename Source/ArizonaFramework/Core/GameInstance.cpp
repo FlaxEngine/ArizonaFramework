@@ -638,6 +638,10 @@ void GameInstance::EndGame()
         {
             if (playerState)
             {
+                if (playerState->PlayerPawn)
+                {
+                    playerState->PlayerPawn->_spawned = false;
+                }
                 DeleteScript(playerState->PlayerUI);
                 DeleteScript(playerState->PlayerController);
                 DeleteScript(playerState->PlayerPawn);
@@ -645,6 +649,7 @@ void GameInstance::EndGame()
             }
         }
     }
+    _playersToSpawn.Clear();
 
     // End scene transitions
     for (Actor* a : _sceneTransitionActors)
@@ -915,7 +920,7 @@ PlayerState* GameInstance::CreatePlayer(NetworkClient* client)
 void GameInstance::DespawnPlayer(PlayerPawn* pawn)
 {
     // Remove player
-    _playersToSpawn.Remove(pawn->GetPlayerId());
+    _playersToSpawn.RemoveAtKeepOrder(pawn->GetPlayerId());
     PlayerDespawned(pawn);
 
     if (!_gameState)
