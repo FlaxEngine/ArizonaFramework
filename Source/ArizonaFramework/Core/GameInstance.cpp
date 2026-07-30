@@ -630,7 +630,7 @@ void GameInstance::EndGame()
         _gameMode->StopGame();
     }
 
-    // Delete game objects
+    // Delete players
     SAFE_DELETE(_splitScreen);
     if (_gameState)
     {
@@ -644,11 +644,24 @@ void GameInstance::EndGame()
                 playerState->DeleteObject();
             }
         }
-        _gameState->DeleteObject();
-        _gameState = nullptr;
+    }
+
+    // End scene transitions
+    for (Actor* a : _sceneTransitionActors)
+    {
+        if (a->IsDuringPlay())
+            a->EndPlay();
     }
     _sceneTransitionActors.Clear();
     _sceneTransitionPlayers.Clear();
+
+    // Delete game objects
+    SAFE_DELETE(_splitScreen);
+    if (_gameState)
+    {
+        _gameState->DeleteObject();
+        _gameState = nullptr;
+    }
     if (_isHosting)
     {
         _gameMode->DeleteObject();
