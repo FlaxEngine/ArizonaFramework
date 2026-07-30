@@ -34,6 +34,12 @@ public:
     {
     }
 
+    /// <summary>
+    /// Sets player viewport for HUD placement within screen. Used to arrange split-screen viewports and UIs. Called when local players are spawned or despawned.
+    /// </summary>
+    /// <param name="viewportRect">Desire viewport placement for the player view rendering (see Camera.ViewportRect to learn more).</param>
+    API_FUNCTION() virtual void SetViewport(const Float4& viewportRect);
+
 private:
     API_PROPERTY(NetworkReplicated) void SetPlayerState(PlayerState* value);
 

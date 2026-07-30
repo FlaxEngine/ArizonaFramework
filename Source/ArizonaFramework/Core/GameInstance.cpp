@@ -10,6 +10,7 @@
 #include "PlayerController.h"
 #include "PlayerState.h"
 #include "PlayerUI.h"
+#include "ArizonaFramework/UI/SplitScreenController.h"
 #include "ArizonaFramework/Utilities/Utilities.h"
 #include "Engine/Content/Content.h"
 #include "Engine/Content/JsonAsset.h"
@@ -20,6 +21,7 @@
 #include "Engine/Level/Level.h"
 #include "Engine/Level/Scene/Scene.h"
 #include "Engine/Level/Actors/EmptyActor.h"
+#include "Engine/Level/Actors/Camera.h"
 #include "Engine/Level/Prefabs/PrefabManager.h"
 #include "Engine/Networking/NetworkClient.h"
 #include "Engine/Networking/NetworkManager.h"
@@ -33,6 +35,7 @@
 #include "Engine/Scripting/BinaryModule.h"
 #include "Engine/Scripting/Scripting.h"
 #include "Engine/Scripting/ManagedCLR/MClass.h"
+#include "Engine/Scripting/ManagedCLR/MMethod.h"
 #include "Engine/Scripting/Plugins/PluginManager.h"
 #include "Engine/Threading/Threading.h"
 
@@ -142,6 +145,14 @@ PlayerPawn::PlayerPawn(const SpawnParams& params)
 {
 }
 
+Camera* PlayerPawn::GetPlayerCamera() const
+{
+    Camera* camera = nullptr;
+    if (_parent)
+        camera = _parent->FindActor<Camera>(true);
+    return camera;
+}
+
 void PlayerPawn::SetPlayerState(PlayerState* value)
 {
     if (_playerState == value)
@@ -174,15 +185,7 @@ void PlayerPawn::OnDestroy()
     {
         if (auto* instance = GameInstance::GetInstance())
         {
-            instance->_playersToSpawn.Remove(_playerId);
-            instance->PlayerDespawned(this);
-            if (auto* gameState = instance->GetGameState())
-            {
-                if (auto* playerState = gameState->GetPlayerStateByPlayerId(_playerId))
-                {
-                    playerState->PlayerPawn = nullptr;
-                }
-            }
+            instance->DespawnPlayer(this);
         }
         _spawned = false;
     }
@@ -272,6 +275,15 @@ void PlayerController::OnDestroy()
 PlayerUI::PlayerUI(const SpawnParams& params)
     : Script(params)
 {
+}
+
+void PlayerUI::SetViewport(const Float4& viewportRect)
+{
+#if !COMPILE_WITHOUT_CSHARP
+    // Resize canvas to match the viewport rect (C#)
+    void* params[1] = { (void*)&viewportRect };
+    GetStaticClass()->GetMethod("SetViewportInternal", 1)->Invoke(GetOrCreateManagedInstance(), params, nullptr);
+#endif
 }
 
 void PlayerUI::SetPlayerState(PlayerState* value)
@@ -504,6 +516,7 @@ void GameInstance::OnUpdate()
 #endif
                 Level::SpawnActor(uiActor);
                 uiScript->OnPlayerSpawned();
+                _splitScreenDirty = true;
             }
 
             // Custom logic after spawning player
@@ -520,6 +533,19 @@ void GameInstance::OnUpdate()
             localPlayerState->PlayerController->OnUpdateInput();
         }
     }
+
+    // Update split-screen
+    if (_splitScreenDirty)
+    {
+        _splitScreenDirty = false;
+        if (!_splitScreen)
+            _splitScreen = GameInstanceSettings::Get()->SplitScreenController.NewObject();
+        auto localPlayers = ToSpan(localPlayerStates);
+        _splitScreen->PreUpdate(localPlayers);
+        _splitScreen->Update(localPlayers);
+    }
+    else if (_splitScreen)
+        _splitScreen->Tick();
 }
 
 PlayerState* GameInstance::GetLocalPlayerState() const
@@ -539,6 +565,11 @@ Array<PlayerState*, InlinedAllocation<8>> GameInstance::GetLocalPlayerStates() c
         }
     }
     return result;
+}
+
+SplitScreenController* GameInstance::GetSplitScreen() const
+{
+    return _splitScreen;
 }
 
 void GameInstance::StartGame()
@@ -600,6 +631,7 @@ void GameInstance::EndGame()
     }
 
     // Delete game objects
+    SAFE_DELETE(_splitScreen);
     if (_gameState)
     {
         for (ScriptingObjectReference<PlayerState>& playerState : _gameState->PlayerStates)
@@ -865,4 +897,24 @@ PlayerState* GameInstance::CreatePlayer(NetworkClient* client)
         _sceneTransitionPlayers.Add(playerState);
 
     return playerState;
+}
+
+void GameInstance::DespawnPlayer(PlayerPawn* pawn)
+{
+    // Remove player
+    _playersToSpawn.Remove(pawn->GetPlayerId());
+    PlayerDespawned(pawn);
+
+    if (!_gameState)
+        return;
+
+    // Dereference pawn
+    if (auto* playerState = _gameState->GetPlayerStateByPlayerId(pawn->GetPlayerId()))
+    {
+        playerState->PlayerPawn = nullptr;
+        if (playerState->NetworkClientId == NetworkManager::LocalClientId && _splitScreen)
+        {
+            _splitScreenDirty = true;
+        }
+    }
 }

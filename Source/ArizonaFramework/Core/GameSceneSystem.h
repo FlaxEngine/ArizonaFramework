@@ -7,7 +7,7 @@
 class Scene;
 
 /// <summary>
-/// Scene gameplay component attached to the Game Instance. Lifetime tied with the scene (multiple systems can exists, one for each loaded scene).
+/// Scene gameplay component attached to the Game Instance. Lifetime tied with the scene (multiple systems can exist, one for each loaded scene).
 /// </summary>
 API_CLASS(Abstract) class ARIZONAFRAMEWORK_API GameSceneSystem : public GameSystem
 {

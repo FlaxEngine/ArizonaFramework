@@ -36,6 +36,16 @@ public:
         return _playerId;
     }
 
+    /// <summary>
+    /// Gets the camera used by the pawn. Searches the pawn hierarchy to get the first active camera actor.
+    /// </summary>
+    API_PROPERTY() class Camera* GetPlayerCamera() const;
+
+    /// <summary>
+    /// Gets the Scene Render Task used by the pawn to draw the view. Returns the main one or custom for local co-op.
+    /// </summary>
+    API_PROPERTY() class SceneRenderTask* GetPlayerRenderTask() const;
+
 public:
     /// <summary>
     /// Event called after player is spawned on a level (locally or after replicated).

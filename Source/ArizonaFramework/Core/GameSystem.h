@@ -6,7 +6,7 @@
 #include "Types.h"
 
 /// <summary>
-/// Gameplay system component attached to the Game Instance. Lifetime tied  with the game.
+/// Gameplay system component attached to the Game Instance. Lifetime tied with the game.
 /// </summary>
 API_CLASS(Abstract) class ARIZONAFRAMEWORK_API GameSystem : public ScriptingObject
 {
