@@ -23,8 +23,10 @@ private:
     Array<ScriptingTypeHandle> _sceneSystemTypes;
     bool _gameStarted = false;
     bool _isHosting = false;
+    bool _splitScreenDirty = false;
     GameMode* _gameMode = nullptr;
     GameState* _gameState = nullptr;
+    SplitScreenController* _splitScreen = nullptr;
     Array<uint32, InlinedAllocation<8>> _playersToSpawn;
 #if !BUILD_RELEASE
     String _windowTitle;
@@ -127,6 +129,11 @@ public:
     /// </summary>
     API_PROPERTY() Array<PlayerState*, InlinedAllocation<8>> GetLocalPlayerStates() const;
 
+    /// <summary>
+    /// Gets the split screen controller (if any spawned). Used only when local coop is enabled (more than one local player). Can be sued to dynamically configure it.
+    /// </summary>
+    API_PROPERTY() SplitScreenController* GetSplitScreen() const;
+
 public:
     /// <summary>
     /// Starts the game. Use it to control local game flow. Called automatically on NetworkManager events for multiplayer games.
@@ -158,4 +165,5 @@ private:
     void OnSceneUnloading(Scene* scene, const Guid& sceneId);
     void OnSceneUnloaded(Scene* scene, const Guid& sceneId);
     PlayerState* CreatePlayer(NetworkClient* client);
+    void DespawnPlayer(PlayerPawn* pawn);
 };
