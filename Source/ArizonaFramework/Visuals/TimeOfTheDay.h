@@ -77,7 +77,7 @@ public:
     /// <summary>
     /// Gets the current date and time.
     /// </summary>
-    API_PROPERTY(Attributes="EditorDisplay(\"Time\"), NoSerialize, HideInEditor(ShowInPlayMode = true)")
+    API_PROPERTY(Attributes="EditorDisplay(\"Time\"), NoSerialize, HideInEditor(ShowInPlayMode=true)")
     DateTime GetCurrentTime() const;
 
     /// <summary>
