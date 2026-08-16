@@ -56,6 +56,12 @@ public:
     API_FIELD(Attributes="EditorOrder(160), EditorDisplay(\"Types\")")
     SoftAssetReference<Prefab> PlayerUIPrefab;
 
+    /// <summary>
+    /// The type of the Split Screen Controller to spawn for local co-op players to manage the viewport and UI (player views placement). Used only when local coop is enabled (more than one local player).
+    /// </summary>
+    API_FIELD(Attributes="EditorOrder(180), EditorDisplay(\"Types\")")
+    SoftTypeReference<SplitScreenController> SplitScreenController = "ArizonaFramework.SplitScreenController";
+
 public:
     /// <summary>
     /// Type of the network replication hierarchy system to use.

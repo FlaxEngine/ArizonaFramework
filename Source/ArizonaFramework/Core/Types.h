@@ -11,3 +11,4 @@ class PlayerState;
 class PlayerPawn;
 class PlayerController;
 class PlayerUI;
+class SplitScreenController;
