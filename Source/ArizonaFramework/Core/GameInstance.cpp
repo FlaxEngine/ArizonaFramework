@@ -920,7 +920,7 @@ PlayerState* GameInstance::CreatePlayer(NetworkClient* client)
 void GameInstance::DespawnPlayer(PlayerPawn* pawn)
 {
     // Remove player
-    _playersToSpawn.RemoveAtKeepOrder(pawn->GetPlayerId());
+    _playersToSpawn.RemoveKeepOrder(pawn->GetPlayerId());
     PlayerDespawned(pawn);
 
     if (!_gameState)
